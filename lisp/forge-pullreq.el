@@ -147,12 +147,10 @@
          (choices (mapcar
                    (apply-partially #'forge--topic-format-choice repo)
                    (forge-ls-pullreqs repo type [number title id class]))))
-    (cdr (assoc (magit-completing-read
-                 prompt choices nil nil nil nil
-                 (and default
-                      (setq default (forge--topic-format-choice default))
-                      (member default choices)
-                      (car default)))
+    (when default
+      (setq default (forge--topic-format-choice default))
+      (setq choices (cons default (delete default choices))))
+    (cdr (assoc (magit-completing-read prompt choices nil nil nil nil default)
                 choices))))
 
 (defun forge--pullreq-branch-internal (pullreq)

@@ -687,12 +687,10 @@ Return a value between 0 and 1."
                      (forge-ls-pullreqs repo type [number title id class])
                      (forge-ls-issues   repo type [number title id class]))
                     #'> :key #'car))))
-    (cdr (assoc (magit-completing-read
-                 prompt choices nil nil nil nil
-                 (and default
-                      (setq default (forge--topic-format-choice default))
-                      (member default choices)
-                      (car default)))
+    (when default
+      (setq default (forge--topic-format-choice default))
+      (setq choices (cons default (delete default choices))))
+    (cdr (assoc (magit-completing-read prompt choices nil nil nil nil default)
                 choices))))
 
 (cl-defmethod forge--topic-format-choice ((topic forge-topic))
